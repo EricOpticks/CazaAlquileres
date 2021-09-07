@@ -141,7 +141,7 @@ func sendMail(request Request, articles []Article) {
 
 	// add inline
 	for _, ar := range articles {
-		htmlBody += `<tr><td style="padding: 5px; width: 81.5%;">`
+		htmlBody += `<tr><td style="padding: 5px; width: 30%;">`
 		sp := strings.Split(ar.Image, ".")
 		ext := "."+sp[len(sp)-1]
 		file := downloadImage(ar, ext)
@@ -158,7 +158,7 @@ func sendMail(request Request, articles []Article) {
 		attachs = append(attachs, attach)
 
 		htmlBody += `<p><img src="cid:`+ar.Hid+`" alt="image" /></p></td>`
-		htmlBody += `<td style="padding: 5px; width: 18.1667%;">`
+		htmlBody += `<td style="padding: 5px; width: 70%;">`
 		htmlBody += `<h2 style="font-size: 20px; margin: 5px; font-family: Avenir;">`+ar.Title+`</h2>`
 		htmlBody += `<table border="0"><tbody><tr><td>`
 		htmlBody += `<p style="margin: 5px; font-size: 16px; line-height: 24px; font-family: Avenir;">`+ar.Location+`</p>`
