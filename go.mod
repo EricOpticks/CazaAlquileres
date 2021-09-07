@@ -4,8 +4,10 @@ go 1.13
 
 require (
 	github.com/PuerkitoBio/goquery v1.7.1
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/juju/errors v0.0.0-20210818161939-5560c4c073ff
+	github.com/mailjet/mailjet-apiv3-go/v3 v3.0.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.8.1

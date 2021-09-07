@@ -2,15 +2,15 @@ package main
 
 import (
 	"bytes"
-	"crypto/tls"
+	"encoding/base64"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/mailjet/mailjet-apiv3-go/v3"
 	"github.com/sirupsen/logrus"
 	"github.com/xhit/go-simple-mail/v2"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var banned []string
@@ -125,52 +125,7 @@ func find(request Request) {
 
 func sendMail(request Request, articles []Article) {
 
-	server := mail.NewSMTPClient()
-
-	// SMTP Server
-	server.Host = "smtp.gmail.com"
-	server.Port = 587
-	server.Username = cfg.SenderEmail
-	server.Password = cfg.SenderPassword
-	server.Encryption = mail.EncryptionSTARTTLS
-
-
-	// Since v2.3.0 you can specified authentication type:
-	// - PLAIN (default)
-	// - LOGIN
-	// - CRAM-MD5
-	// - None
-	// server.Authentication = mail.AuthPlain
-
-	// Variable to keep alive connection
-	server.KeepAlive = false
-
-	// Timeout for connect to SMTP Server
-	server.ConnectTimeout = 10 * time.Second
-
-	// Timeout for send the data and wait respond
-	server.SendTimeout = 10 * time.Second
-
-	// Set TLSConfig to provide custom TLS configuration. For example,
-	// to skip TLS verification (useful for testing):
-	server.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
-	// SMTP client
-	smtpClient,err := server.Connect()
-
-	if err != nil{
-		log.Fatal(err)
-	}
-
-	// New email simple html with inline and CC
-	email := mail.NewMSG()
-	email.SetFrom("Eric <"+cfg.SenderEmail+">").
-		AddTo(request.Email).
-		SetSubject(request.Name)
-
-	// also you can add body from []byte with SetBodyData, example:
-	// email.SetBodyData(mail.TextHTML, []byte(htmlBody))
-
+	mailjetClient := mailjet.NewMailjetClient("896a90d1eb4be1f4a6f1c3e0fc9c263e", "4aae95854b83ab4975ad47e3fe7a3aa7")
 
 
 	htmlBody := `<html>
@@ -181,13 +136,24 @@ func sendMail(request Request, articles []Article) {
 	<body><div><table style="width: 100%;" role="presentation" border="1" width="100%" cellspacing="0">
 						<tbody>`
 
+
+	attachs := mailjet.AttachmentsV31{}
+
 	// add inline
 	for _, ar := range articles {
 		htmlBody += `<tr><td style="padding: 5px; width: 81.5%;">`
 		sp := strings.Split(ar.Image, ".")
 		ext := "."+sp[len(sp)-1]
 		file := downloadImage(ar, ext)
-		email.Attach(file)
+
+		attach := mailjet.AttachmentV31 {
+			ContentType: http.DetectContentType(file.Data),
+			Filename: file.Name,
+			Base64Content: base64.StdEncoding.EncodeToString(file.Data),
+		}
+
+		attachs = append(attachs, attach)
+
 		htmlBody += `<p><img src="cid:`+file.Name+`" alt="image" /></p></td>`
 		htmlBody += `<td style="padding: 5px; width: 18.1667%;">`
 		htmlBody += `<h2 style="font-size: 20px; margin: 5px; font-family: Avenir;">`+ar.Title+`</h2>`
@@ -203,17 +169,28 @@ func sendMail(request Request, articles []Article) {
 
 	htmlBody += "</tbody></table></div></body></html>"
 
-	email.SetBody(mail.TextHTML, htmlBody)
-
-	// always check error after send
-	if email.Error != nil{
-		log.Fatal(email.Error)
+	messagesInfo := []mailjet.InfoMessagesV31 {
+		mailjet.InfoMessagesV31{
+			From: &mailjet.RecipientV31{
+				Email: "eric.gamo@gmail.com",
+				Name: "Eric",
+			},
+			To: &mailjet.RecipientsV31{
+				mailjet.RecipientV31 {
+					Email: request.Email,
+					Name: "Recipient",
+				},
+			},
+			Subject: request.Name,
+			TextPart: "",
+			HTMLPart: htmlBody,
+			Attachments: &attachs,
+		},
 	}
-
-	// Call Send and pass the client
-	err = email.Send(smtpClient)
+	messages := mailjet.MessagesV31{Info: messagesInfo }
+	_, err := mailjetClient.SendMailV31(&messages)
 	if err != nil {
-		log.Println(err)
+		logrus.Error(err)
 	} else {
 		log.Println("Email Sent")
 	}
@@ -267,5 +244,6 @@ func downloadImage(article Article, ext string) *mail.File {
 	}
 
 	file.Data = buf.Bytes()
+
 	return file
 }
