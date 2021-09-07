@@ -137,7 +137,7 @@ func sendMail(request Request, articles []Article) {
 						<tbody>`
 
 
-	attachs := mailjet.AttachmentsV31{}
+	attachs := mailjet.InlinedAttachmentsV31{}
 
 	// add inline
 	for _, ar := range articles {
@@ -146,15 +146,18 @@ func sendMail(request Request, articles []Article) {
 		ext := "."+sp[len(sp)-1]
 		file := downloadImage(ar, ext)
 
-		attach := mailjet.AttachmentV31 {
-			ContentType: http.DetectContentType(file.Data),
-			Filename: file.Name,
-			Base64Content: base64.StdEncoding.EncodeToString(file.Data),
+		attach := mailjet.InlinedAttachmentV31{
+			AttachmentV31 :mailjet.AttachmentV31{
+				ContentType: http.DetectContentType(file.Data),
+				Filename:    file.Name,
+				Base64Content: base64.StdEncoding.EncodeToString(file.Data),
+			},
+			ContentID: ar.Hid,
 		}
 
 		attachs = append(attachs, attach)
 
-		htmlBody += `<p><img src="cid:`+file.Name+`" alt="image" /></p></td>`
+		htmlBody += `<p><img src="cid:`+ar.Hid+`" alt="image" /></p></td>`
 		htmlBody += `<td style="padding: 5px; width: 18.1667%;">`
 		htmlBody += `<h2 style="font-size: 20px; margin: 5px; font-family: Avenir;">`+ar.Title+`</h2>`
 		htmlBody += `<table border="0"><tbody><tr><td>`
@@ -184,7 +187,7 @@ func sendMail(request Request, articles []Article) {
 			Subject: request.Name,
 			TextPart: "",
 			HTMLPart: htmlBody,
-			Attachments: &attachs,
+			InlinedAttachments: &attachs,
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo }
