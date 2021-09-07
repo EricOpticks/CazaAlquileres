@@ -101,6 +101,7 @@ func find(request Request) {
 			article.Features = clean(article.Features)
 
 			price := strings.Split(item.Find(".list-item-info .list-item-content-second .list-item-price span").Text(), " ")[0]
+			price = strings.ReplaceAll(price, ".", "")
 			article.Price, _ = strconv.Atoi(price)
 			
 			// find in database
