@@ -141,7 +141,7 @@ func sendMail(request Request, articles []Article) {
 
 	// add inline
 	for _, ar := range articles {
-		htmlBody += `<tr><td style="padding: 5px; width: 30%;">`
+		htmlBody += `<tr><td style="padding: 5px; width: 350px;">`
 		sp := strings.Split(ar.Image, ".")
 		ext := "."+sp[len(sp)-1]
 		file := downloadImage(ar, ext)
@@ -157,17 +157,15 @@ func sendMail(request Request, articles []Article) {
 
 		attachs = append(attachs, attach)
 
-		htmlBody += `<p><img src="cid:`+ar.Hid+`" alt="image" /></p></td>`
+		htmlBody += `<p><img src="cid:`+ar.Hid+`" alt="image" width="350px"/></p></td>`
 		htmlBody += `<td style="padding: 5px; width: 70%;">`
 		htmlBody += `<h2 style="font-size: 20px; margin: 5px; font-family: Avenir;">`+ar.Title+`</h2>`
-		htmlBody += `<table border="0"><tbody><tr><td>`
 		htmlBody += `<p style="margin: 5px; font-size: 16px; line-height: 24px; font-family: Avenir;">`+ar.Location+`</p>`
 		htmlBody += `<p style="margin: 5px; font-size: 16px; line-height: 24px; font-family: Avenir;">`+strconv.Itoa(ar.Price)+" €"+`</p>`
 		htmlBody += `<p style="margin: 5px; font-size: 12px; line-height: 24px; font-family: Avenir;">`+ar.LastUpdate+`</p>`
-		htmlBody += `<p style="margin: 0; font-size: 16px; line-height: 24px; font-family: Avenir;"><a style="color: #ff7a59; text-decoration: underline;" href="`+ar.Href+`">Ver</a></p>`
-		htmlBody += `</td>`
 		htmlBody += `<td><p style="margin: 5px; font-size: 14px; line-height: 24px; font-family: Avenir;">`+ar.Features+`</p></td>`
-		htmlBody += `</tr></tbody></table></td></tr>`
+		htmlBody += `<p style="margin: 0; font-size: 16px; line-height: 24px; font-family: Avenir;"><a style="color: #ff7a59; text-decoration: underline;" href="`+ar.Href+`">Ver</a></p>`
+		htmlBody += `</td></tr>`
 	}
 
 	htmlBody += "</tbody></table></div></body></html>"
