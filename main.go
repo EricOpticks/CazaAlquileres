@@ -83,7 +83,7 @@ func find(request Request) {
 	articles.Each(func(i int, s *goquery.Selection) {
 		article := Article{}
 		article.Publisher, _ = s.Attr("data-publisherid")
-
+		article.RequestId = request.Id
 		if isNotBanned(article.Publisher) {
 
 			article.Hid, _ = s.Attr("data-id")
