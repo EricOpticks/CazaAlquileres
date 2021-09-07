@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var DB *sqlx.DB
