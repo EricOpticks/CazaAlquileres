@@ -146,16 +146,18 @@ func sendMail(request Request, articles []Article) {
 		ext := "."+sp[len(sp)-1]
 		file := downloadImage(ar, ext)
 
-		attach := mailjet.InlinedAttachmentV31{
-			AttachmentV31 :mailjet.AttachmentV31{
-				ContentType: http.DetectContentType(file.Data),
-				Filename:    file.Name,
-				Base64Content: base64.StdEncoding.EncodeToString(file.Data),
-			},
-			ContentID: ar.Hid,
-		}
+		if file != nil && file.Data != nil {
+			attach := mailjet.InlinedAttachmentV31{
+				AttachmentV31 :mailjet.AttachmentV31{
+					ContentType: http.DetectContentType(file.Data),
+					Filename:    file.Name,
+					Base64Content: base64.StdEncoding.EncodeToString(file.Data),
+				},
+				ContentID: ar.Hid,
+			}
 
-		attachs = append(attachs, attach)
+			attachs = append(attachs, attach)
+		}
 
 		htmlBody += `<p><img src="cid:`+ar.Hid+`" alt="image" width="350px"/></p></td>`
 		htmlBody += `<td style="padding: 5px; width: 70%;">`
