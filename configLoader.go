@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"flag"
@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type Config struct {
+type AConfig struct {
 	v          *viper.Viper
 	properties map[string]*Property
 	withFile   bool
@@ -24,15 +24,15 @@ type Property struct {
 	required bool
 }
 
-func NewConfig() *Config {
-	newConf := Config{}
+func NewConfig() *AConfig {
+	newConf := AConfig{}
 	newConf.v = viper.New()
 	newConf.properties = map[string]*Property{}
 
 	return &newConf
 }
 
-func (c *Config) Load(print bool) (Provider, error) {
+func (c *AConfig) Load(print bool) (Provider, error) {
 
 	if c.loaded {
 		return nil, errors.New("config was already loaded")
@@ -85,7 +85,7 @@ func (c *Config) Load(print bool) (Provider, error) {
 	return c.v, nil
 }
 
-func (c *Config) Print() {
+func (c *AConfig) Print() {
 
 	builder := strings.Builder{}
 
@@ -112,7 +112,7 @@ func (c *Config) Print() {
 	fmt.Println(builder.String())
 }
 
-func (c *Config) WithProperty(name string, required bool) *Property {
+func (c *AConfig) WithProperty(name string, required bool) *Property {
 	prop := Property{}
 	prop.name = name
 	prop.required = required
@@ -121,12 +121,12 @@ func (c *Config) WithProperty(name string, required bool) *Property {
 	return c.properties[name]
 }
 
-func (c *Config) SetFilePath(path string) {
+func (c *AConfig) SetFilePath(path string) {
 	c.v.AddConfigPath(path)
 
 }
 
-func (c *Config) SetFileName(name string) {
+func (c *AConfig) SetFileName(name string) {
 	c.v.SetConfigName(name)
 	c.withFile = true
 }

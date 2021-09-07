@@ -1,7 +1,6 @@
 package main
 
 import (
-	"CazaAlquileres/database"
 	"github.com/sirupsen/logrus"
 )
 
@@ -11,7 +10,7 @@ const findallrequestsquery = `SELECT
 
 func FindAllRequests() []Request{
 	var requests []Request
-	err := database.DB.Select(&requests, findallrequestsquery)
+	err := DB.Select(&requests, findallrequestsquery)
 
 	if err != nil {
 		logrus.Panic("Error retrieving requests: %s", err)
@@ -27,7 +26,7 @@ const findarticlequery = `SELECT
 
 func FindArticle(requestId int, hid string) *Article {
 	var articles []Article
-	err := database.DB.Select(&articles, findarticlequery, requestId, hid)
+	err := DB.Select(&articles, findarticlequery, requestId, hid)
 
 	if err != nil {
 		logrus.Panic("Error retrieving article: %s", err)
@@ -46,7 +45,7 @@ const insertquery =  `
 		        :price, :last_update)`
 func Insert(article Article) {
 
-	_, err := database.DB.NamedExec(insertquery, &article)
+	_, err := DB.NamedExec(insertquery, &article)
 	if err != nil {
 		logrus.Errorf("Error inserting article ", err)
 	}
@@ -58,7 +57,7 @@ const updatequery =  `
 		        :price, :last_update) where id = :id`
 func Update(article Article) {
 
-	_, err := database.DB.NamedExec(insertquery, &article)
+	_, err := DB.NamedExec(insertquery, &article)
 	if err != nil {
 		logrus.Errorf("Error inserting article ", err)
 	}

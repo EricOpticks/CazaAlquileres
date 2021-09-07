@@ -1,7 +1,6 @@
-package database
+package main
 
 import (
-	"CazaAlquileres/config"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 )
@@ -30,7 +29,7 @@ func InitDB(url string) {
 	logrus.Info("Database connected successfully")
 }
 
-func Load(cfg *config.Config) {
+func Load(cfg *AConfig) {
 	cfg.WithProperty("db-name", true).Alias("DBConfig.Name").EnvAlias("DATABASE_NAME")
 	cfg.WithProperty("db-url", true).Alias("DBConfig.Url").EnvAlias("DATABASE_URL")
 	cfg.WithProperty("db-user", true).Alias("DBConfig.User").EnvAlias("DATABASE_USER")

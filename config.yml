@@ -1,0 +1,9 @@
+# Database credentials
+db-name: "db1"
+db-url: "localhost:3306"
+db-user: "root"
+db-password: "tofill"
+
+sender-email: "eric.gamo@gmail.com"
+sender-password: "tofill"
+

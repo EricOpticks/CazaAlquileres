@@ -1,7 +1,6 @@
 package main
 
 import (
-	"CazaAlquileres/database"
 	"bytes"
 	"crypto/tls"
 	"github.com/PuerkitoBio/goquery"
@@ -43,8 +42,8 @@ func init() {
 func main() {
 	defer holdUnexpectedError()
 	cfg := LoadConfig()
-	database.InitDB(cfg.DBConfig.GetDBURL())
-	defer database.DB.Close()
+	InitDB(cfg.DBConfig.GetDBURL())
+	defer DB.Close()
 
 	execute()
 }

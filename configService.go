@@ -1,17 +1,15 @@
 package main
 
 import (
-	"CazaAlquileres/config"
-	"CazaAlquileres/database"
 	"github.com/sirupsen/logrus"
 )
 
 var cfg Config
 
 type Config struct {
-	DBConfig 			database.DBConfig
-	SenderEmail			string
-	SenderPassword		string
+	DBConfig       DBConfig
+	SenderEmail    string
+	SenderPassword string
 }
 
 func LoadConfig() *Config {
@@ -34,13 +32,13 @@ func LoadConfig() *Config {
 	return &cfg
 }
 
-func load() (config.Provider, error) {
-	cfg := config.NewConfig()
+func load() (Provider, error) {
+	cfg := NewConfig()
 
 	cfg.WithProperty("sender-email", true).Alias("SenderEmail").EnvAlias("SENDER_EMAIL")
 	cfg.WithProperty("sender-password", true).Alias("SenderPassword").EnvAlias("SENDER_PASSWORD")
 
-	database.Load(cfg)
+	Load(cfg)
 
 	cfg.SetFileName("config")
 	cfg.SetFilePath(".")
