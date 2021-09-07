@@ -54,7 +54,7 @@ func Insert(article Article) {
 const updatequery =  `
 		UPDATE articles (hid,request_id,publisher,location,title,href,image,features,price,last_update)
 		VALUES (:hid,:request_id, :publisher, :location, :title, :href, :image, :features, 
-		        :price, :last_update) where id = :id`
+		        :price, :last_update) where hid = :hid`
 func Update(article Article) {
 
 	_, err := DB.NamedExec(insertquery, &article)
