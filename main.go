@@ -162,8 +162,8 @@ func sendMail(request Request, articles []Article) {
 		htmlBody += `<h2 style="font-size: 20px; margin: 5px; font-family: Avenir;">`+ar.Title+`</h2>`
 		htmlBody += `<p style="margin: 5px; font-size: 16px; line-height: 24px; font-family: Avenir;">`+ar.Location+`</p>`
 		htmlBody += `<p style="margin: 5px; font-size: 16px; line-height: 24px; font-family: Avenir;">`+strconv.Itoa(ar.Price)+" €"+`</p>`
+		htmlBody += `<p style="margin: 5px; font-size: 14px; line-height: 24px; font-family: Avenir;">`+ar.Features+`</p>`
 		htmlBody += `<p style="margin: 5px; font-size: 12px; line-height: 24px; font-family: Avenir;">`+ar.LastUpdate+`</p>`
-		htmlBody += `<td><p style="margin: 5px; font-size: 14px; line-height: 24px; font-family: Avenir;">`+ar.Features+`</p></td>`
 		htmlBody += `<p style="margin: 0; font-size: 16px; line-height: 24px; font-family: Avenir;"><a style="color: #ff7a59; text-decoration: underline;" href="`+ar.Href+`">Ver</a></p>`
 		htmlBody += `</td></tr>`
 	}
